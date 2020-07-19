@@ -53,13 +53,13 @@ func (s *fheServer) GenerateKey(ctx context.Context, _ *empty.Empty) (*pb.KeyPai
 	logger.Info("GenerateKey: generating")
 	sk, pk := s.kgen.GenKeyPair()
 	logger.Info("GenerateKey: done")
-	return marshalKeyPair(KeyPair{PublicKey: *pk, SecretKey: *sk})
+	return marshalKeyPair(&KeyPair{PublicKey: *pk, SecretKey: *sk})
 }
 
 // StoreKey store a fhe key pair
 func (s *fheServer) StoreKey(ctx context.Context, req *pb.StoreKeyRequest) (*empty.Empty, error) {
 	logger.Infof("StoreKey: store key: %s", req.Key)
-	kp, err := unmarshalKeyPair(*req.KeyPair)
+	kp, err := unmarshalKeyPair(req.KeyPair)
 	if err != nil {
 		return &empty.Empty{}, err
 	}
@@ -77,7 +77,7 @@ func (s *fheServer) FetchPublicKey(ctx context.Context, req *pb.FetchPublicKeyRe
 		logger.Errorf("FetchPublicKey: key %s not found", req.Key)
 		return nil, fmt.Errorf("key %s not found", req.Key)
 	}
-	kp, err := marshalKeyPair(*keypair)
+	kp, err := marshalKeyPair(keypair)
 	kp.SecretKey = []byte{}
 	return kp, err
 }
@@ -98,12 +98,12 @@ func (s *fheServer) FetchPublicKeyBySHA256(ctx context.Context, req *pb.FetchPub
 		logger.Errorf("FetchPublicKeyBySHA256: hash key %s not found", hash)
 		return nil, fmt.Errorf("hash key %s not found", hash)
 	}
-	kp, err := marshalKeyPair(*keypair)
+	kp, err := marshalKeyPair(keypair)
 	kp.SecretKey = []byte{}
 	return kp, err
 }
 
-func unmarshalKeyPair(kp pb.KeyPair) (KeyPair, error) {
+func unmarshalKeyPair(kp *pb.KeyPair) (KeyPair, error) {
 	sk := bfv.SecretKey{}
 	pk := bfv.PublicKey{}
 	var err error
@@ -123,7 +123,7 @@ func unmarshalKeyPair(kp pb.KeyPair) (KeyPair, error) {
 	}, nil
 }
 
-func marshalKeyPair(kp KeyPair) (*pb.KeyPair, error) {
+func marshalKeyPair(kp *KeyPair) (*pb.KeyPair, error) {
 	sk := kp.SecretKey
 	skBytes, err := sk.MarshalBinary()
 	if err != nil {
