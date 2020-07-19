@@ -17,7 +17,9 @@ M = $(shell printf "\033[34;1m▶\033[0m")
 export GO111MODULE=on
 
 .PHONY: all
-all: fmt lint | $(BIN) ; $(info $(M) building executable…) @ ## Build program binary
+all: fmt lint build 
+build:
+	$(info $(M) building executable…) @ ## Build program binary 
 	@echo executable binaries in $(BIN)/$(basename $(MODULE))/
 	@echo server...
 	$Q cd server && \
