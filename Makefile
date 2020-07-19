@@ -40,6 +40,11 @@ build:
 		-ldflags '-X $(MODULE)/cmd.Version=$(VERSION) -X $(MODULE)/cmd.BuildDate=$(DATE)' \
 		-o $(BIN)/$(basename $(MODULE))/third_party client.go
 
+.PHONY: grpc
+grpc:
+	@echo gen grpc ...
+	$Q protoc -I fhe/ fhe/fhe.proto --go_out=plugins=grpc:fhe
+
 # Tools
 
 $(BIN):
