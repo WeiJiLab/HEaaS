@@ -42,6 +42,7 @@ type fheServer struct {
 	kgen bfv.KeyGenerator
 }
 
+// KeyPair is a bfv key pair
 type KeyPair struct {
 	PublicKey bfv.PublicKey
 	SecretKey bfv.SecretKey
@@ -63,8 +64,8 @@ func (s *fheServer) StoreKey(ctx context.Context, req *pb.StoreKeyRequest) (*emp
 		return &empty.Empty{}, err
 	}
 	keypairMap[req.Key] = &kp
-	pk_sha256 := sha256.Sum256(req.KeyPair.PublicKey)
-	keypairHashMap[pk_sha256] = &kp
+	pkSHA256 := sha256.Sum256(req.KeyPair.PublicKey)
+	keypairHashMap[pkSHA256] = &kp
 	return &empty.Empty{}, nil
 }
 
@@ -124,18 +125,18 @@ func unmarshalKeyPair(kp pb.KeyPair) (KeyPair, error) {
 
 func marshalKeyPair(kp KeyPair) (*pb.KeyPair, error) {
 	sk := kp.SecretKey
-	sk_bytes, err := sk.MarshalBinary()
+	skBytes, err := sk.MarshalBinary()
 	if err != nil {
 		logger.Errorf("failed to marshallKeyPair secretKey: %v", err)
 		return &pb.KeyPair{}, err
 	}
 	pk := kp.PublicKey
-	pk_bytes, err := pk.MarshalBinary()
+	pkBytes, err := pk.MarshalBinary()
 	if err != nil {
 		logger.Errorf("failed to marshallKeyPair publicKey: %v", err)
 		return &pb.KeyPair{}, err
 	}
-	return &pb.KeyPair{PublicKey: pk_bytes, SecretKey: sk_bytes}, nil
+	return &pb.KeyPair{PublicKey: pkBytes, SecretKey: skBytes}, nil
 }
 
 func newServer() *fheServer {

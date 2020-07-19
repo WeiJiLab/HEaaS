@@ -22,6 +22,7 @@ var (
 	serverHostOverride = flag.String("server_host_override", "x.test.youtube.com", "The server name used to verify the hostname returned by the TLS handshake")
 )
 
+// KeyPair is a pair of bfv public and private keys
 type KeyPair struct {
 	PublicKey []byte
 	SecretKey []byte
@@ -84,9 +85,9 @@ func main() {
 	client := pb.NewFHEClient(conn)
 
 	keyPair := fetchPublicKey(client, "fan@torchz.net")
-	pk_sha256 := sha256.Sum256(keyPair.PublicKey)
-	log.Printf("public key sha256: %x", pk_sha256)
-	keyPairBySHA256 := fetchPublicKeyBySHA256(client, hex.EncodeToString(pk_sha256[:]))
+	pkSHA256 := sha256.Sum256(keyPair.PublicKey)
+	log.Printf("public key sha256: %x", pkSHA256)
+	keyPairBySHA256 := fetchPublicKeyBySHA256(client, hex.EncodeToString(pkSHA256[:]))
 	if len(keyPair.SecretKey) != 0 {
 		log.Fatalf("length of keyPair.SecretKey != 0, %d", len(keyPair.SecretKey))
 	}
