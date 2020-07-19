@@ -1,0 +1,36 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+
+option go_package = ".;fhe";
+option java_multiple_files = true;
+option java_package = "com.thoughtworks.heaas.fhe";
+option java_outer_classname = "FHE";
+
+package fhe;
+
+// Interface exported by the server.
+service FHE {
+  // KeyManagement
+  // GenerateKey Create a key pair
+  rpc GenerateKey(google.protobuf.Empty) returns (KeyPair) {}
+  // StoreKey Store a key pair
+  rpc StoreKey(StoreKeyRequest) returns (google.protobuf.Empty) {}
+  // FetchPublicKey Fetch a key pair by key string
+  rpc FetchPublicKey(FetchPublicKeyRequest) returns (KeyPair) {}
+  // FetchPublicKeyBySHA256 Fetch a key pair by sha256 digest string 
+  rpc FetchPublicKeyBySHA256(FetchPublicKeyRequest) returns (KeyPair) {}
+}
+
+message KeyPair {
+  bytes secretKey = 1;
+  bytes publicKey = 2;
+}
+
+message StoreKeyRequest {
+  string  key = 1;
+  KeyPair keyPair = 2;
+}
+
+message FetchPublicKeyRequest {
+  string  key = 1;
+}
