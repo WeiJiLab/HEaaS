@@ -58,12 +58,25 @@ func (s *fheServer) GenerateKey(ctx context.Context, _ *empty.Empty) (*pb.KeyPai
 
 // StoreKey store a fhe key pair
 func (s *fheServer) StoreKey(ctx context.Context, req *pb.StoreKeyRequest) (*empty.Empty, error) {
-	logger.Infof("StoreKey: store key: %s", req.Key)
+	logger.Infof("StoreKey: store key account: %s", req.Account)
 	kp, err := unmarshalKeyPair(req.KeyPair)
 	if err != nil {
 		return &empty.Empty{}, err
 	}
-	keypairMap[req.Key] = &kp
+	keypairMap[req.Account] = &kp
+	pkSHA256 := sha256.Sum256(req.KeyPair.PublicKey)
+	keypairHashMap[pkSHA256] = &kp
+	return &empty.Empty{}, nil
+}
+
+// StorePublicKey store a fhe key pair
+func (s *fheServer) StorePublicKey(ctx context.Context, req *pb.StoreKeyRequest) (*empty.Empty, error) {
+	logger.Infof("StoreKey: store key account: %s", req.Account)
+	kp, err := unmarshalKeyPairPublic(req.KeyPair)
+	if err != nil {
+		return &empty.Empty{}, err
+	}
+	keypairMap[req.Account] = &kp
 	pkSHA256 := sha256.Sum256(req.KeyPair.PublicKey)
 	keypairHashMap[pkSHA256] = &kp
 	return &empty.Empty{}, nil
@@ -71,36 +84,49 @@ func (s *fheServer) StoreKey(ctx context.Context, req *pb.StoreKeyRequest) (*emp
 
 // FetchPublicKey fetch a fhe key pair with only Public key
 func (s *fheServer) FetchPublicKey(ctx context.Context, req *pb.FetchPublicKeyRequest) (*pb.KeyPair, error) {
-	logger.Infof("FetchPublicKey: fetching key: %s", req.Key)
-	keypair, ok := keypairMap[req.Key]
+	logger.Infof("FetchPublicKey: fetching key account: %s", req.Account)
+	keypair, ok := keypairMap[req.Account]
 	if !ok {
-		logger.Errorf("FetchPublicKey: key %s not found", req.Key)
-		return nil, fmt.Errorf("key %s not found", req.Key)
+		logger.Errorf("FetchPublicKey: key account %s not found", req.Account)
+		return nil, fmt.Errorf("key by account %s not found", req.Account)
 	}
-	kp, err := marshalKeyPair(keypair)
+	kp, err := marshalKeyPairPublic(keypair)
 	kp.SecretKey = []byte{}
 	return kp, err
 }
 
 // FetchPublicKeyBySHA256 fetch a fhe key pair with only Public key
-func (s *fheServer) FetchPublicKeyBySHA256(ctx context.Context, req *pb.FetchPublicKeyRequest) (*pb.KeyPair, error) {
-	logger.Infof("FetchPublicKeyBySHA256: fetching key: %s", req.Key)
-	key, err := hex.DecodeString(req.Key)
+func (s *fheServer) FetchPublicKeyBySHA256(ctx context.Context, req *pb.FetchPublicKeyBySHA256Request) (*pb.KeyPair, error) {
+	logger.Infof("FetchPublicKeyBySHA256: fetching key: %s", req.Hash)
+	key, err := hex.DecodeString(req.Hash)
 	if err != nil {
 		logger.Errorf("failed to unmarshallKeyPair secretKey: %v", err)
 		return &pb.KeyPair{}, err
 	}
-	logger.Infof("FetchPublicKeyBySHA256: fetching key: %s", req.Key)
+	logger.Infof("FetchPublicKeyBySHA256: fetching key: %s", req.Hash)
 	var hash [sha256.Size]byte
 	copy(hash[:], key)
 	keypair, ok := keypairHashMap[hash]
 	if !ok {
 		logger.Errorf("FetchPublicKeyBySHA256: hash key %s not found", hash)
-		return nil, fmt.Errorf("hash key %s not found", hash)
+		return nil, fmt.Errorf("key by hash %s not found", hash)
 	}
-	kp, err := marshalKeyPair(keypair)
+	kp, err := marshalKeyPairPublic(keypair)
 	kp.SecretKey = []byte{}
 	return kp, err
+}
+
+func unmarshalKeyPairPublic(kp *pb.KeyPair) (KeyPair, error) {
+	pk := bfv.PublicKey{}
+	var err error
+	err = pk.UnmarshalBinary(kp.PublicKey)
+	if err != nil {
+		logger.Errorf("failed to unmarshallKeyPair publicKey: %v", err)
+		return KeyPair{}, err
+	}
+	return KeyPair{
+		PublicKey: pk,
+	}, nil
 }
 
 func unmarshalKeyPair(kp *pb.KeyPair) (KeyPair, error) {
@@ -121,6 +147,16 @@ func unmarshalKeyPair(kp *pb.KeyPair) (KeyPair, error) {
 		PublicKey: pk,
 		SecretKey: sk,
 	}, nil
+}
+
+func marshalKeyPairPublic(kp *KeyPair) (*pb.KeyPair, error) {
+	pk := kp.PublicKey
+	pkBytes, err := pk.MarshalBinary()
+	if err != nil {
+		logger.Errorf("failed to marshallKeyPair publicKey: %v", err)
+		return &pb.KeyPair{}, err
+	}
+	return &pb.KeyPair{PublicKey: pkBytes}, nil
 }
 
 func marshalKeyPair(kp *KeyPair) (*pb.KeyPair, error) {

@@ -11,14 +11,22 @@ package fhe;
 // Interface exported by the server.
 service FHE {
   // KeyManagement
-  // GenerateKey Create a key pair
+  // GenerateKey Create a key pair (NOTICE: only for delegated key management)
   rpc GenerateKey(google.protobuf.Empty) returns (KeyPair) {}
-  // StoreKey Store a key pair
+  // StoreKey Store a key pair (NOTICE: only for delegated key management)
   rpc StoreKey(StoreKeyRequest) returns (google.protobuf.Empty) {}
+  // StorePublicKey Store a key pair only with Public key
+  rpc StorePublicKey(StoreKeyRequest) returns (google.protobuf.Empty) {}
   // FetchPublicKey Fetch a key pair by key string
   rpc FetchPublicKey(FetchPublicKeyRequest) returns (KeyPair) {}
   // FetchPublicKeyBySHA256 Fetch a key pair by sha256 digest string 
-  rpc FetchPublicKeyBySHA256(FetchPublicKeyRequest) returns (KeyPair) {}
+  rpc FetchPublicKeyBySHA256(FetchPublicKeyBySHA256Request) returns (KeyPair) {}
+  // SetAsk send out request for eligible quote
+  rpc SetAsk(AskRequest) returns (google.protobuf.Empty) {}
+  // SetBid send out request for eligible quote
+  rpc SetBid(BidRequest) returns (google.protobuf.Empty) {}
+  // EligibleBid gets interest and eligible loan quote
+  rpc EligibleLoadBid(EligibleBidRequest) returns (BidResponse) {}
 }
 
 message KeyPair {
@@ -27,10 +35,38 @@ message KeyPair {
 }
 
 message StoreKeyRequest {
-  string  key = 1;
+  string  account = 1;
   KeyPair keyPair = 2;
 }
 
 message FetchPublicKeyRequest {
+  string  account = 1;
+}
+
+message FetchPublicKeyBySHA256Request {
+  string  hash = 1;
+}
+
+message EligibleLoanResponse {
   string  key = 1;
+}
+
+message AskRequest {
+  string  account = 1;
+  bytes   creditCipherText = 2;
+  bytes   limitPriceCipherText = 3;
+}
+
+message BidRequest {
+  string  account = 1;
+  bytes   creditCipherText = 2;
+  bytes   limitPriceCipherText = 3;
+}
+
+message EligibleBidRequest {
+  string  account = 1;
+}
+
+message BidResponse {
+  bytes   eligibleBidCipherText = 1;
 }

@@ -44,11 +44,11 @@ func generateKeys(client pb.FHEClient) KeyPair {
 }
 
 // storeKey store a pair of fhe keys
-func storeKey(client pb.FHEClient, key string, keyPair KeyPair) {
+func storeKey(client pb.FHEClient, account string, keyPair KeyPair) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	_, err := client.StoreKey(ctx, &pb.StoreKeyRequest{
-		Key: key,
+		Account: account,
 		KeyPair: &pb.KeyPair{
 			PublicKey: keyPair.PublicKey,
 			SecretKey: keyPair.SecretKey,
@@ -60,15 +60,31 @@ func storeKey(client pb.FHEClient, key string, keyPair KeyPair) {
 	return
 }
 
-// fetchPublicKey store a pair of fhe keys
-func fetchPublicKey(client pb.FHEClient, key string) KeyPair {
+// storePublicKey store a pair of fhe keys
+func storePublicKey(client pb.FHEClient, account string, keyPair KeyPair) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	keyPair, err := client.FetchPublicKey(ctx, &pb.FetchPublicKeyRequest{
-		Key: key,
+	_, err := client.StorePublicKey(ctx, &pb.StoreKeyRequest{
+		Account: account,
+		KeyPair: &pb.KeyPair{
+			PublicKey: keyPair.PublicKey,
+		},
 	})
 	if err != nil {
 		log.Fatalf("%v.StoreKey(_) = _, %v: ", client, err)
+	}
+	return
+}
+
+// fetchPublicKey store a pair of fhe keys
+func fetchPublicKey(client pb.FHEClient, account string) KeyPair {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	keyPair, err := client.FetchPublicKey(ctx, &pb.FetchPublicKeyRequest{
+		Account: account,
+	})
+	if err != nil {
+		log.Fatalf("%v.FetchPublicKey(_) = _, %v: ", client, err)
 	}
 	return KeyPair{
 		PublicKey: keyPair.PublicKey,
@@ -77,14 +93,14 @@ func fetchPublicKey(client pb.FHEClient, key string) KeyPair {
 }
 
 // fetchPublicKeyBySHA256 store a pair of fhe keys
-func fetchPublicKeyBySHA256(client pb.FHEClient, key string) KeyPair {
+func fetchPublicKeyBySHA256(client pb.FHEClient, hash string) KeyPair {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	keyPair, err := client.FetchPublicKeyBySHA256(ctx, &pb.FetchPublicKeyRequest{
-		Key: key,
+	keyPair, err := client.FetchPublicKeyBySHA256(ctx, &pb.FetchPublicKeyBySHA256Request{
+		Hash: hash,
 	})
 	if err != nil {
-		log.Fatalf("%v.StoreKey(_) = _, %v: ", client, err)
+		log.Fatalf("%v.FetchPublicKeyBySHA256(_) = _, %v: ", client, err)
 	}
 	return KeyPair{
 		PublicKey: keyPair.PublicKey,
@@ -117,7 +133,7 @@ func main() {
 	client := pb.NewFHEClient(conn)
 
 	kp := generateKeys(client)
-	storeKey(client, "fan@torchz.net", kp)
+	storePublicKey(client, "fan@torchz.net", kp)
 	keyPair := fetchPublicKey(client, "fan@torchz.net")
 	pkSHA256 := sha256.Sum256(keyPair.PublicKey)
 	log.Printf("public key sha256: %x", pkSHA256)

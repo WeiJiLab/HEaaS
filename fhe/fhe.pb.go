@@ -90,7 +90,7 @@ type StoreKeyRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Key     string   `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Account string   `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
 	KeyPair *KeyPair `protobuf:"bytes,2,opt,name=keyPair,proto3" json:"keyPair,omitempty"`
 }
 
@@ -126,9 +126,9 @@ func (*StoreKeyRequest) Descriptor() ([]byte, []int) {
 	return file_fhe_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *StoreKeyRequest) GetKey() string {
+func (x *StoreKeyRequest) GetAccount() string {
 	if x != nil {
-		return x.Key
+		return x.Account
 	}
 	return ""
 }
@@ -145,7 +145,7 @@ type FetchPublicKeyRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Account string `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
 }
 
 func (x *FetchPublicKeyRequest) Reset() {
@@ -180,11 +180,325 @@ func (*FetchPublicKeyRequest) Descriptor() ([]byte, []int) {
 	return file_fhe_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *FetchPublicKeyRequest) GetKey() string {
+func (x *FetchPublicKeyRequest) GetAccount() string {
+	if x != nil {
+		return x.Account
+	}
+	return ""
+}
+
+type FetchPublicKeyBySHA256Request struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Hash string `protobuf:"bytes,1,opt,name=hash,proto3" json:"hash,omitempty"`
+}
+
+func (x *FetchPublicKeyBySHA256Request) Reset() {
+	*x = FetchPublicKeyBySHA256Request{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_fhe_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FetchPublicKeyBySHA256Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FetchPublicKeyBySHA256Request) ProtoMessage() {}
+
+func (x *FetchPublicKeyBySHA256Request) ProtoReflect() protoreflect.Message {
+	mi := &file_fhe_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FetchPublicKeyBySHA256Request.ProtoReflect.Descriptor instead.
+func (*FetchPublicKeyBySHA256Request) Descriptor() ([]byte, []int) {
+	return file_fhe_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *FetchPublicKeyBySHA256Request) GetHash() string {
+	if x != nil {
+		return x.Hash
+	}
+	return ""
+}
+
+type EligibleLoanResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+}
+
+func (x *EligibleLoanResponse) Reset() {
+	*x = EligibleLoanResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_fhe_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *EligibleLoanResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EligibleLoanResponse) ProtoMessage() {}
+
+func (x *EligibleLoanResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_fhe_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EligibleLoanResponse.ProtoReflect.Descriptor instead.
+func (*EligibleLoanResponse) Descriptor() ([]byte, []int) {
+	return file_fhe_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *EligibleLoanResponse) GetKey() string {
 	if x != nil {
 		return x.Key
 	}
 	return ""
+}
+
+type AskRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Account              string `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
+	CreditCipherText     []byte `protobuf:"bytes,2,opt,name=creditCipherText,proto3" json:"creditCipherText,omitempty"`
+	LimitPriceCipherText []byte `protobuf:"bytes,3,opt,name=limitPriceCipherText,proto3" json:"limitPriceCipherText,omitempty"`
+}
+
+func (x *AskRequest) Reset() {
+	*x = AskRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_fhe_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AskRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AskRequest) ProtoMessage() {}
+
+func (x *AskRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_fhe_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AskRequest.ProtoReflect.Descriptor instead.
+func (*AskRequest) Descriptor() ([]byte, []int) {
+	return file_fhe_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *AskRequest) GetAccount() string {
+	if x != nil {
+		return x.Account
+	}
+	return ""
+}
+
+func (x *AskRequest) GetCreditCipherText() []byte {
+	if x != nil {
+		return x.CreditCipherText
+	}
+	return nil
+}
+
+func (x *AskRequest) GetLimitPriceCipherText() []byte {
+	if x != nil {
+		return x.LimitPriceCipherText
+	}
+	return nil
+}
+
+type BidRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Account              string `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
+	CreditCipherText     []byte `protobuf:"bytes,2,opt,name=creditCipherText,proto3" json:"creditCipherText,omitempty"`
+	LimitPriceCipherText []byte `protobuf:"bytes,3,opt,name=limitPriceCipherText,proto3" json:"limitPriceCipherText,omitempty"`
+}
+
+func (x *BidRequest) Reset() {
+	*x = BidRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_fhe_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *BidRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BidRequest) ProtoMessage() {}
+
+func (x *BidRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_fhe_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BidRequest.ProtoReflect.Descriptor instead.
+func (*BidRequest) Descriptor() ([]byte, []int) {
+	return file_fhe_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *BidRequest) GetAccount() string {
+	if x != nil {
+		return x.Account
+	}
+	return ""
+}
+
+func (x *BidRequest) GetCreditCipherText() []byte {
+	if x != nil {
+		return x.CreditCipherText
+	}
+	return nil
+}
+
+func (x *BidRequest) GetLimitPriceCipherText() []byte {
+	if x != nil {
+		return x.LimitPriceCipherText
+	}
+	return nil
+}
+
+type EligibleBidRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Account string `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
+}
+
+func (x *EligibleBidRequest) Reset() {
+	*x = EligibleBidRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_fhe_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *EligibleBidRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EligibleBidRequest) ProtoMessage() {}
+
+func (x *EligibleBidRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_fhe_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EligibleBidRequest.ProtoReflect.Descriptor instead.
+func (*EligibleBidRequest) Descriptor() ([]byte, []int) {
+	return file_fhe_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *EligibleBidRequest) GetAccount() string {
+	if x != nil {
+		return x.Account
+	}
+	return ""
+}
+
+type BidResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	EligibleBidCipherText []byte `protobuf:"bytes,1,opt,name=eligibleBidCipherText,proto3" json:"eligibleBidCipherText,omitempty"`
+}
+
+func (x *BidResponse) Reset() {
+	*x = BidResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_fhe_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *BidResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BidResponse) ProtoMessage() {}
+
+func (x *BidResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_fhe_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BidResponse.ProtoReflect.Descriptor instead.
+func (*BidResponse) Descriptor() ([]byte, []int) {
+	return file_fhe_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *BidResponse) GetEligibleBidCipherText() []byte {
+	if x != nil {
+		return x.EligibleBidCipherText
+	}
+	return nil
 }
 
 var File_fhe_proto protoreflect.FileDescriptor
@@ -197,33 +511,80 @@ var file_fhe_proto_rawDesc = []byte{
 	0x65, 0x74, 0x4b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x09, 0x73, 0x65, 0x63,
 	0x72, 0x65, 0x74, 0x4b, 0x65, 0x79, 0x12, 0x1c, 0x0a, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63,
 	0x4b, 0x65, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69,
-	0x63, 0x4b, 0x65, 0x79, 0x22, 0x4b, 0x0a, 0x0f, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x4b, 0x65, 0x79,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x26, 0x0a, 0x07, 0x6b, 0x65, 0x79,
-	0x50, 0x61, 0x69, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x66, 0x68, 0x65,
-	0x2e, 0x4b, 0x65, 0x79, 0x50, 0x61, 0x69, 0x72, 0x52, 0x07, 0x6b, 0x65, 0x79, 0x50, 0x61, 0x69,
-	0x72, 0x22, 0x29, 0x0a, 0x15, 0x46, 0x65, 0x74, 0x63, 0x68, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63,
-	0x4b, 0x65, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65,
-	0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x32, 0xfc, 0x01, 0x0a,
-	0x03, 0x46, 0x48, 0x45, 0x12, 0x35, 0x0a, 0x0b, 0x47, 0x65, 0x6e, 0x65, 0x72, 0x61, 0x74, 0x65,
-	0x4b, 0x65, 0x79, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x0c, 0x2e, 0x66, 0x68,
-	0x65, 0x2e, 0x4b, 0x65, 0x79, 0x50, 0x61, 0x69, 0x72, 0x22, 0x00, 0x12, 0x3a, 0x0a, 0x08, 0x53,
-	0x74, 0x6f, 0x72, 0x65, 0x4b, 0x65, 0x79, 0x12, 0x14, 0x2e, 0x66, 0x68, 0x65, 0x2e, 0x53, 0x74,
-	0x6f, 0x72, 0x65, 0x4b, 0x65, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e,
-	0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e,
-	0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x12, 0x3c, 0x0a, 0x0e, 0x46, 0x65, 0x74, 0x63, 0x68,
-	0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x12, 0x1a, 0x2e, 0x66, 0x68, 0x65, 0x2e,
-	0x46, 0x65, 0x74, 0x63, 0x68, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x0c, 0x2e, 0x66, 0x68, 0x65, 0x2e, 0x4b, 0x65, 0x79, 0x50,
-	0x61, 0x69, 0x72, 0x22, 0x00, 0x12, 0x44, 0x0a, 0x16, 0x46, 0x65, 0x74, 0x63, 0x68, 0x50, 0x75,
-	0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x42, 0x79, 0x53, 0x48, 0x41, 0x32, 0x35, 0x36, 0x12,
-	0x1a, 0x2e, 0x66, 0x68, 0x65, 0x2e, 0x46, 0x65, 0x74, 0x63, 0x68, 0x50, 0x75, 0x62, 0x6c, 0x69,
-	0x63, 0x4b, 0x65, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x0c, 0x2e, 0x66, 0x68,
-	0x65, 0x2e, 0x4b, 0x65, 0x79, 0x50, 0x61, 0x69, 0x72, 0x22, 0x00, 0x42, 0x2a, 0x0a, 0x1a, 0x63,
-	0x6f, 0x6d, 0x2e, 0x74, 0x68, 0x6f, 0x75, 0x67, 0x68, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x73, 0x2e,
-	0x68, 0x65, 0x61, 0x61, 0x73, 0x2e, 0x66, 0x68, 0x65, 0x42, 0x03, 0x46, 0x48, 0x45, 0x50, 0x01,
-	0x5a, 0x05, 0x2e, 0x3b, 0x66, 0x68, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x63, 0x4b, 0x65, 0x79, 0x22, 0x53, 0x0a, 0x0f, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x4b, 0x65, 0x79,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x63, 0x63, 0x6f, 0x75,
+	0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e,
+	0x74, 0x12, 0x26, 0x0a, 0x07, 0x6b, 0x65, 0x79, 0x50, 0x61, 0x69, 0x72, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x66, 0x68, 0x65, 0x2e, 0x4b, 0x65, 0x79, 0x50, 0x61, 0x69, 0x72,
+	0x52, 0x07, 0x6b, 0x65, 0x79, 0x50, 0x61, 0x69, 0x72, 0x22, 0x31, 0x0a, 0x15, 0x46, 0x65, 0x74,
+	0x63, 0x68, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x33, 0x0a, 0x1d,
+	0x46, 0x65, 0x74, 0x63, 0x68, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x42, 0x79,
+	0x53, 0x48, 0x41, 0x32, 0x35, 0x36, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a,
+	0x04, 0x68, 0x61, 0x73, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x68, 0x61, 0x73,
+	0x68, 0x22, 0x28, 0x0a, 0x14, 0x45, 0x6c, 0x69, 0x67, 0x69, 0x62, 0x6c, 0x65, 0x4c, 0x6f, 0x61,
+	0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x22, 0x86, 0x01, 0x0a, 0x0a,
+	0x41, 0x73, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x63,
+	0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x63, 0x63,
+	0x6f, 0x75, 0x6e, 0x74, 0x12, 0x2a, 0x0a, 0x10, 0x63, 0x72, 0x65, 0x64, 0x69, 0x74, 0x43, 0x69,
+	0x70, 0x68, 0x65, 0x72, 0x54, 0x65, 0x78, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x10,
+	0x63, 0x72, 0x65, 0x64, 0x69, 0x74, 0x43, 0x69, 0x70, 0x68, 0x65, 0x72, 0x54, 0x65, 0x78, 0x74,
+	0x12, 0x32, 0x0a, 0x14, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x43, 0x69,
+	0x70, 0x68, 0x65, 0x72, 0x54, 0x65, 0x78, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x14,
+	0x6c, 0x69, 0x6d, 0x69, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x43, 0x69, 0x70, 0x68, 0x65, 0x72,
+	0x54, 0x65, 0x78, 0x74, 0x22, 0x86, 0x01, 0x0a, 0x0a, 0x42, 0x69, 0x64, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x2a, 0x0a,
+	0x10, 0x63, 0x72, 0x65, 0x64, 0x69, 0x74, 0x43, 0x69, 0x70, 0x68, 0x65, 0x72, 0x54, 0x65, 0x78,
+	0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x10, 0x63, 0x72, 0x65, 0x64, 0x69, 0x74, 0x43,
+	0x69, 0x70, 0x68, 0x65, 0x72, 0x54, 0x65, 0x78, 0x74, 0x12, 0x32, 0x0a, 0x14, 0x6c, 0x69, 0x6d,
+	0x69, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x43, 0x69, 0x70, 0x68, 0x65, 0x72, 0x54, 0x65, 0x78,
+	0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x14, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x50, 0x72,
+	0x69, 0x63, 0x65, 0x43, 0x69, 0x70, 0x68, 0x65, 0x72, 0x54, 0x65, 0x78, 0x74, 0x22, 0x2e, 0x0a,
+	0x12, 0x45, 0x6c, 0x69, 0x67, 0x69, 0x62, 0x6c, 0x65, 0x42, 0x69, 0x64, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x43, 0x0a,
+	0x0b, 0x42, 0x69, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x34, 0x0a, 0x15,
+	0x65, 0x6c, 0x69, 0x67, 0x69, 0x62, 0x6c, 0x65, 0x42, 0x69, 0x64, 0x43, 0x69, 0x70, 0x68, 0x65,
+	0x72, 0x54, 0x65, 0x78, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x15, 0x65, 0x6c, 0x69,
+	0x67, 0x69, 0x62, 0x6c, 0x65, 0x42, 0x69, 0x64, 0x43, 0x69, 0x70, 0x68, 0x65, 0x72, 0x54, 0x65,
+	0x78, 0x74, 0x32, 0xf0, 0x03, 0x0a, 0x03, 0x46, 0x48, 0x45, 0x12, 0x35, 0x0a, 0x0b, 0x47, 0x65,
+	0x6e, 0x65, 0x72, 0x61, 0x74, 0x65, 0x4b, 0x65, 0x79, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67,
+	0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74,
+	0x79, 0x1a, 0x0c, 0x2e, 0x66, 0x68, 0x65, 0x2e, 0x4b, 0x65, 0x79, 0x50, 0x61, 0x69, 0x72, 0x22,
+	0x00, 0x12, 0x3a, 0x0a, 0x08, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x4b, 0x65, 0x79, 0x12, 0x14, 0x2e,
+	0x66, 0x68, 0x65, 0x2e, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x4b, 0x65, 0x79, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x12, 0x40, 0x0a,
+	0x0e, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x12,
+	0x14, 0x2e, 0x66, 0x68, 0x65, 0x2e, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x4b, 0x65, 0x79, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x12,
+	0x3c, 0x0a, 0x0e, 0x46, 0x65, 0x74, 0x63, 0x68, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65,
+	0x79, 0x12, 0x1a, 0x2e, 0x66, 0x68, 0x65, 0x2e, 0x46, 0x65, 0x74, 0x63, 0x68, 0x50, 0x75, 0x62,
+	0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x0c, 0x2e,
+	0x66, 0x68, 0x65, 0x2e, 0x4b, 0x65, 0x79, 0x50, 0x61, 0x69, 0x72, 0x22, 0x00, 0x12, 0x4c, 0x0a,
+	0x16, 0x46, 0x65, 0x74, 0x63, 0x68, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x42,
+	0x79, 0x53, 0x48, 0x41, 0x32, 0x35, 0x36, 0x12, 0x22, 0x2e, 0x66, 0x68, 0x65, 0x2e, 0x46, 0x65,
+	0x74, 0x63, 0x68, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x42, 0x79, 0x53, 0x48,
+	0x41, 0x32, 0x35, 0x36, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x0c, 0x2e, 0x66, 0x68,
+	0x65, 0x2e, 0x4b, 0x65, 0x79, 0x50, 0x61, 0x69, 0x72, 0x22, 0x00, 0x12, 0x33, 0x0a, 0x06, 0x53,
+	0x65, 0x74, 0x41, 0x73, 0x6b, 0x12, 0x0f, 0x2e, 0x66, 0x68, 0x65, 0x2e, 0x41, 0x73, 0x6b, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00,
+	0x12, 0x33, 0x0a, 0x06, 0x53, 0x65, 0x74, 0x42, 0x69, 0x64, 0x12, 0x0f, 0x2e, 0x66, 0x68, 0x65,
+	0x2e, 0x42, 0x69, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x67, 0x6f,
+	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d,
+	0x70, 0x74, 0x79, 0x22, 0x00, 0x12, 0x3e, 0x0a, 0x0f, 0x45, 0x6c, 0x69, 0x67, 0x69, 0x62, 0x6c,
+	0x65, 0x4c, 0x6f, 0x61, 0x64, 0x42, 0x69, 0x64, 0x12, 0x17, 0x2e, 0x66, 0x68, 0x65, 0x2e, 0x45,
+	0x6c, 0x69, 0x67, 0x69, 0x62, 0x6c, 0x65, 0x42, 0x69, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x10, 0x2e, 0x66, 0x68, 0x65, 0x2e, 0x42, 0x69, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x2a, 0x0a, 0x1a, 0x63, 0x6f, 0x6d, 0x2e, 0x74, 0x68, 0x6f,
+	0x75, 0x67, 0x68, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x73, 0x2e, 0x68, 0x65, 0x61, 0x61, 0x73, 0x2e,
+	0x66, 0x68, 0x65, 0x42, 0x03, 0x46, 0x48, 0x45, 0x50, 0x01, 0x5a, 0x05, 0x2e, 0x3b, 0x66, 0x68,
+	0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -238,25 +599,39 @@ func file_fhe_proto_rawDescGZIP() []byte {
 	return file_fhe_proto_rawDescData
 }
 
-var file_fhe_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_fhe_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_fhe_proto_goTypes = []interface{}{
-	(*KeyPair)(nil),               // 0: fhe.KeyPair
-	(*StoreKeyRequest)(nil),       // 1: fhe.StoreKeyRequest
-	(*FetchPublicKeyRequest)(nil), // 2: fhe.FetchPublicKeyRequest
-	(*empty.Empty)(nil),           // 3: google.protobuf.Empty
+	(*KeyPair)(nil),                       // 0: fhe.KeyPair
+	(*StoreKeyRequest)(nil),               // 1: fhe.StoreKeyRequest
+	(*FetchPublicKeyRequest)(nil),         // 2: fhe.FetchPublicKeyRequest
+	(*FetchPublicKeyBySHA256Request)(nil), // 3: fhe.FetchPublicKeyBySHA256Request
+	(*EligibleLoanResponse)(nil),          // 4: fhe.EligibleLoanResponse
+	(*AskRequest)(nil),                    // 5: fhe.AskRequest
+	(*BidRequest)(nil),                    // 6: fhe.BidRequest
+	(*EligibleBidRequest)(nil),            // 7: fhe.EligibleBidRequest
+	(*BidResponse)(nil),                   // 8: fhe.BidResponse
+	(*empty.Empty)(nil),                   // 9: google.protobuf.Empty
 }
 var file_fhe_proto_depIdxs = []int32{
 	0, // 0: fhe.StoreKeyRequest.keyPair:type_name -> fhe.KeyPair
-	3, // 1: fhe.FHE.GenerateKey:input_type -> google.protobuf.Empty
+	9, // 1: fhe.FHE.GenerateKey:input_type -> google.protobuf.Empty
 	1, // 2: fhe.FHE.StoreKey:input_type -> fhe.StoreKeyRequest
-	2, // 3: fhe.FHE.FetchPublicKey:input_type -> fhe.FetchPublicKeyRequest
-	2, // 4: fhe.FHE.FetchPublicKeyBySHA256:input_type -> fhe.FetchPublicKeyRequest
-	0, // 5: fhe.FHE.GenerateKey:output_type -> fhe.KeyPair
-	3, // 6: fhe.FHE.StoreKey:output_type -> google.protobuf.Empty
-	0, // 7: fhe.FHE.FetchPublicKey:output_type -> fhe.KeyPair
-	0, // 8: fhe.FHE.FetchPublicKeyBySHA256:output_type -> fhe.KeyPair
-	5, // [5:9] is the sub-list for method output_type
-	1, // [1:5] is the sub-list for method input_type
+	1, // 3: fhe.FHE.StorePublicKey:input_type -> fhe.StoreKeyRequest
+	2, // 4: fhe.FHE.FetchPublicKey:input_type -> fhe.FetchPublicKeyRequest
+	3, // 5: fhe.FHE.FetchPublicKeyBySHA256:input_type -> fhe.FetchPublicKeyBySHA256Request
+	5, // 6: fhe.FHE.SetAsk:input_type -> fhe.AskRequest
+	6, // 7: fhe.FHE.SetBid:input_type -> fhe.BidRequest
+	7, // 8: fhe.FHE.EligibleLoadBid:input_type -> fhe.EligibleBidRequest
+	0, // 9: fhe.FHE.GenerateKey:output_type -> fhe.KeyPair
+	9, // 10: fhe.FHE.StoreKey:output_type -> google.protobuf.Empty
+	9, // 11: fhe.FHE.StorePublicKey:output_type -> google.protobuf.Empty
+	0, // 12: fhe.FHE.FetchPublicKey:output_type -> fhe.KeyPair
+	0, // 13: fhe.FHE.FetchPublicKeyBySHA256:output_type -> fhe.KeyPair
+	9, // 14: fhe.FHE.SetAsk:output_type -> google.protobuf.Empty
+	9, // 15: fhe.FHE.SetBid:output_type -> google.protobuf.Empty
+	8, // 16: fhe.FHE.EligibleLoadBid:output_type -> fhe.BidResponse
+	9, // [9:17] is the sub-list for method output_type
+	1, // [1:9] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
 	1, // [1:1] is the sub-list for extension extendee
 	0, // [0:1] is the sub-list for field type_name
@@ -304,6 +679,78 @@ func file_fhe_proto_init() {
 				return nil
 			}
 		}
+		file_fhe_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FetchPublicKeyBySHA256Request); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_fhe_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*EligibleLoanResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_fhe_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AskRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_fhe_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*BidRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_fhe_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*EligibleBidRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_fhe_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*BidResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -311,7 +758,7 @@ func file_fhe_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_fhe_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -338,14 +785,22 @@ const _ = grpc.SupportPackageIsVersion6
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type FHEClient interface {
 	// KeyManagement
-	// GenerateKey Create a key pair
+	// GenerateKey Create a key pair (NOTICE: only for delegated key management)
 	GenerateKey(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*KeyPair, error)
-	// StoreKey Store a key pair
+	// StoreKey Store a key pair (NOTICE: only for delegated key management)
 	StoreKey(ctx context.Context, in *StoreKeyRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	// StorePublicKey Store a key pair only with Public key
+	StorePublicKey(ctx context.Context, in *StoreKeyRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 	// FetchPublicKey Fetch a key pair by key string
 	FetchPublicKey(ctx context.Context, in *FetchPublicKeyRequest, opts ...grpc.CallOption) (*KeyPair, error)
 	// FetchPublicKeyBySHA256 Fetch a key pair by sha256 digest string
-	FetchPublicKeyBySHA256(ctx context.Context, in *FetchPublicKeyRequest, opts ...grpc.CallOption) (*KeyPair, error)
+	FetchPublicKeyBySHA256(ctx context.Context, in *FetchPublicKeyBySHA256Request, opts ...grpc.CallOption) (*KeyPair, error)
+	// SetAsk send out request for eligible quote
+	SetAsk(ctx context.Context, in *AskRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	// SetBid send out request for eligible quote
+	SetBid(ctx context.Context, in *BidRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	// EligibleBid gets interest and eligible loan quote
+	EligibleLoadBid(ctx context.Context, in *EligibleBidRequest, opts ...grpc.CallOption) (*BidResponse, error)
 }
 
 type fHEClient struct {
@@ -374,6 +829,15 @@ func (c *fHEClient) StoreKey(ctx context.Context, in *StoreKeyRequest, opts ...g
 	return out, nil
 }
 
+func (c *fHEClient) StorePublicKey(ctx context.Context, in *StoreKeyRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/fhe.FHE/StorePublicKey", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *fHEClient) FetchPublicKey(ctx context.Context, in *FetchPublicKeyRequest, opts ...grpc.CallOption) (*KeyPair, error) {
 	out := new(KeyPair)
 	err := c.cc.Invoke(ctx, "/fhe.FHE/FetchPublicKey", in, out, opts...)
@@ -383,9 +847,36 @@ func (c *fHEClient) FetchPublicKey(ctx context.Context, in *FetchPublicKeyReques
 	return out, nil
 }
 
-func (c *fHEClient) FetchPublicKeyBySHA256(ctx context.Context, in *FetchPublicKeyRequest, opts ...grpc.CallOption) (*KeyPair, error) {
+func (c *fHEClient) FetchPublicKeyBySHA256(ctx context.Context, in *FetchPublicKeyBySHA256Request, opts ...grpc.CallOption) (*KeyPair, error) {
 	out := new(KeyPair)
 	err := c.cc.Invoke(ctx, "/fhe.FHE/FetchPublicKeyBySHA256", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *fHEClient) SetAsk(ctx context.Context, in *AskRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/fhe.FHE/SetAsk", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *fHEClient) SetBid(ctx context.Context, in *BidRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/fhe.FHE/SetBid", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *fHEClient) EligibleLoadBid(ctx context.Context, in *EligibleBidRequest, opts ...grpc.CallOption) (*BidResponse, error) {
+	out := new(BidResponse)
+	err := c.cc.Invoke(ctx, "/fhe.FHE/EligibleLoadBid", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -395,14 +886,22 @@ func (c *fHEClient) FetchPublicKeyBySHA256(ctx context.Context, in *FetchPublicK
 // FHEServer is the server API for FHE service.
 type FHEServer interface {
 	// KeyManagement
-	// GenerateKey Create a key pair
+	// GenerateKey Create a key pair (NOTICE: only for delegated key management)
 	GenerateKey(context.Context, *empty.Empty) (*KeyPair, error)
-	// StoreKey Store a key pair
+	// StoreKey Store a key pair (NOTICE: only for delegated key management)
 	StoreKey(context.Context, *StoreKeyRequest) (*empty.Empty, error)
+	// StorePublicKey Store a key pair only with Public key
+	StorePublicKey(context.Context, *StoreKeyRequest) (*empty.Empty, error)
 	// FetchPublicKey Fetch a key pair by key string
 	FetchPublicKey(context.Context, *FetchPublicKeyRequest) (*KeyPair, error)
 	// FetchPublicKeyBySHA256 Fetch a key pair by sha256 digest string
-	FetchPublicKeyBySHA256(context.Context, *FetchPublicKeyRequest) (*KeyPair, error)
+	FetchPublicKeyBySHA256(context.Context, *FetchPublicKeyBySHA256Request) (*KeyPair, error)
+	// SetAsk send out request for eligible quote
+	SetAsk(context.Context, *AskRequest) (*empty.Empty, error)
+	// SetBid send out request for eligible quote
+	SetBid(context.Context, *BidRequest) (*empty.Empty, error)
+	// EligibleBid gets interest and eligible loan quote
+	EligibleLoadBid(context.Context, *EligibleBidRequest) (*BidResponse, error)
 }
 
 // UnimplementedFHEServer can be embedded to have forward compatible implementations.
@@ -415,11 +914,23 @@ func (*UnimplementedFHEServer) GenerateKey(context.Context, *empty.Empty) (*KeyP
 func (*UnimplementedFHEServer) StoreKey(context.Context, *StoreKeyRequest) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StoreKey not implemented")
 }
+func (*UnimplementedFHEServer) StorePublicKey(context.Context, *StoreKeyRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StorePublicKey not implemented")
+}
 func (*UnimplementedFHEServer) FetchPublicKey(context.Context, *FetchPublicKeyRequest) (*KeyPair, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FetchPublicKey not implemented")
 }
-func (*UnimplementedFHEServer) FetchPublicKeyBySHA256(context.Context, *FetchPublicKeyRequest) (*KeyPair, error) {
+func (*UnimplementedFHEServer) FetchPublicKeyBySHA256(context.Context, *FetchPublicKeyBySHA256Request) (*KeyPair, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FetchPublicKeyBySHA256 not implemented")
+}
+func (*UnimplementedFHEServer) SetAsk(context.Context, *AskRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetAsk not implemented")
+}
+func (*UnimplementedFHEServer) SetBid(context.Context, *BidRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetBid not implemented")
+}
+func (*UnimplementedFHEServer) EligibleLoadBid(context.Context, *EligibleBidRequest) (*BidResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EligibleLoadBid not implemented")
 }
 
 func RegisterFHEServer(s *grpc.Server, srv FHEServer) {
@@ -462,6 +973,24 @@ func _FHE_StoreKey_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FHE_StorePublicKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StoreKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FHEServer).StorePublicKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/fhe.FHE/StorePublicKey",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FHEServer).StorePublicKey(ctx, req.(*StoreKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _FHE_FetchPublicKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(FetchPublicKeyRequest)
 	if err := dec(in); err != nil {
@@ -481,7 +1010,7 @@ func _FHE_FetchPublicKey_Handler(srv interface{}, ctx context.Context, dec func(
 }
 
 func _FHE_FetchPublicKeyBySHA256_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(FetchPublicKeyRequest)
+	in := new(FetchPublicKeyBySHA256Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -493,7 +1022,61 @@ func _FHE_FetchPublicKeyBySHA256_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: "/fhe.FHE/FetchPublicKeyBySHA256",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FHEServer).FetchPublicKeyBySHA256(ctx, req.(*FetchPublicKeyRequest))
+		return srv.(FHEServer).FetchPublicKeyBySHA256(ctx, req.(*FetchPublicKeyBySHA256Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FHE_SetAsk_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AskRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FHEServer).SetAsk(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/fhe.FHE/SetAsk",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FHEServer).SetAsk(ctx, req.(*AskRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FHE_SetBid_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BidRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FHEServer).SetBid(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/fhe.FHE/SetBid",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FHEServer).SetBid(ctx, req.(*BidRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FHE_EligibleLoadBid_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EligibleBidRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FHEServer).EligibleLoadBid(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/fhe.FHE/EligibleLoadBid",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FHEServer).EligibleLoadBid(ctx, req.(*EligibleBidRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -511,12 +1094,28 @@ var _FHE_serviceDesc = grpc.ServiceDesc{
 			Handler:    _FHE_StoreKey_Handler,
 		},
 		{
+			MethodName: "StorePublicKey",
+			Handler:    _FHE_StorePublicKey_Handler,
+		},
+		{
 			MethodName: "FetchPublicKey",
 			Handler:    _FHE_FetchPublicKey_Handler,
 		},
 		{
 			MethodName: "FetchPublicKeyBySHA256",
 			Handler:    _FHE_FetchPublicKeyBySHA256_Handler,
+		},
+		{
+			MethodName: "SetAsk",
+			Handler:    _FHE_SetAsk_Handler,
+		},
+		{
+			MethodName: "SetBid",
+			Handler:    _FHE_SetBid_Handler,
+		},
+		{
+			MethodName: "EligibleLoadBid",
+			Handler:    _FHE_EligibleLoadBid_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
