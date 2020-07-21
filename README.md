@@ -40,3 +40,10 @@ Run third_party:
 
 2020/07/20 23:30:51 public key sha256: e662baf058b62db2713c318d2bebf2e7ff431bd39a19eb4af945796dc3153054
 ```
+
+Completing bids collection:
+
+```
+total bid number: 3
+bids: []main.Bid{main.Bid{LimitPriceDistance:-10, CreditDistance:-100}, main.Bid{LimitPriceDistance:0, CreditDistance:100}, main.Bid{LimitPriceDistance:10, CreditDistance:0}}
+```
