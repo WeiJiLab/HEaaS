@@ -12,6 +12,7 @@ func init() {
 	params.T = 0x3ee0001
 }
 
+// GetParams get global params used for FHE bfv initialization
 func GetParams() *bfv.Parameters {
 	return params
 }

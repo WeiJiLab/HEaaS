@@ -2,6 +2,7 @@ package common
 
 import "github.com/ldsec/lattigo/bfv"
 
+// EncryptIntCiphertext encrypt a int as ciphertext
 func EncryptIntCiphertext(encryptor bfv.Encryptor, value int) *bfv.Ciphertext {
 	params := GetParams()
 	encoder := bfv.NewEncoder(params)
@@ -13,6 +14,7 @@ func EncryptIntCiphertext(encryptor bfv.Encryptor, value int) *bfv.Ciphertext {
 	return ciphertext
 }
 
+// EncryptInt encrypt a int as bytes
 func EncryptInt(encryptor bfv.Encryptor, value int) []byte {
 	params := GetParams()
 	encoder := bfv.NewEncoder(params)
@@ -25,6 +27,7 @@ func EncryptInt(encryptor bfv.Encryptor, value int) []byte {
 	return ciphertextBytes
 }
 
+// DecryptInt decrypt a int from bytes
 func DecryptInt(decryptor bfv.Decryptor, value []byte) int {
 	params := GetParams()
 	encoder := bfv.NewEncoder(params)
