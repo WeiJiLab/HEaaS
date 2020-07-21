@@ -19,6 +19,7 @@ import (
 
 	"github.com/golang/protobuf/ptypes/empty"
 
+	"github.com/LabZion/HEaaS/common"
 	pb "github.com/LabZion/HEaaS/fhe"
 	"github.com/ldsec/lattigo/bfv"
 )
@@ -30,16 +31,36 @@ var (
 	keyFile    = flag.String("key_file", "", "The TLS key file")
 	jsonDBFile = flag.String("json_db_file", "", "A json file containing a list of features")
 	port       = flag.Int("port", 10000, "The server port")
-	logger     *glog.Logger
+
+	params *bfv.Parameters
+	logger *glog.Logger
 
 	keypairMap     map[string]*KeyPair
 	keypairHashMap map[[sha256.Size]byte]*KeyPair
+
+	bidMap map[string](map[string]*Bid)
+	askMap map[string]*Ask
 )
 
 type fheServer struct {
 	pb.UnimplementedFHEServer
 
 	kgen bfv.KeyGenerator
+}
+
+// Ask is an ask with limit price and credit
+type Ask struct {
+	account string
+
+	limitPrice *bfv.Ciphertext
+}
+
+// Bid is an ask with limit price and credit
+type Bid struct {
+	account string
+
+	limitPrice *bfv.Ciphertext
+	credit     *bfv.Ciphertext
 }
 
 // KeyPair is a bfv key pair
@@ -116,6 +137,97 @@ func (s *fheServer) FetchPublicKeyBySHA256(ctx context.Context, req *pb.FetchPub
 	return kp, err
 }
 
+// SetAsk
+func (s *fheServer) SetAsk(ctx context.Context, req *pb.AskRequest) (*empty.Empty, error) {
+	logger.Infof("Recieve Ask: store ask account: %s", req.Account)
+
+	limitPrice := &bfv.Ciphertext{}
+	if err := limitPrice.UnmarshalBinary(req.LimitPriceCipherText); err != nil {
+		logger.Errorf("limitPrice.UnmarshalBinary(req.LimitPriceCipherText); err: %s", err)
+		return &empty.Empty{}, err
+	}
+
+	askMap[req.Account] = &Ask{
+		account:    req.Account,
+		limitPrice: limitPrice,
+	}
+	bidMap[req.Account] = make(map[string]*Bid)
+	return &empty.Empty{}, nil
+}
+
+// SetBid
+func (s *fheServer) SetBid(ctx context.Context, req *pb.BidRequest) (*empty.Empty, error) {
+	logger.Infof("Recieve Bid: store bid targetAccount: %s, account: %s", req.TargetAccount, req.Account)
+
+	limitPrice := bfv.NewCiphertext(params, 0)
+	if err := limitPrice.UnmarshalBinary(req.LimitPriceCipherText); err != nil {
+		logger.Errorf("limit.UnmarshalBinary(req.LimitPriceCipherText); err: %s", err)
+		return &empty.Empty{}, err
+	}
+
+	credit := bfv.NewCiphertext(params, 0)
+	if err := credit.UnmarshalBinary(req.CreditCipherText); err != nil {
+		logger.Errorf("credit.UnmarshalBinary(req.CreditCipherText); err: %s", err)
+		return &empty.Empty{}, err
+	}
+
+	bidMap[req.TargetAccount][req.Account] = &Bid{
+		account:    req.Account,
+		limitPrice: limitPrice,
+		credit:     credit,
+	}
+	return &empty.Empty{}, nil
+}
+
+// EligibleBid
+func (s *fheServer) EligibleBid(ctx context.Context, req *pb.EligibleBidRequest) (*pb.EligibleBidResponse, error) {
+	logger.Infof("Recieve EligibleBid: store ask account: %s", req.Account)
+
+	kp, ok := keypairMap[req.Account]
+	if !ok {
+		logger.Errorf("kp: keypair by account %s not found", req.Account)
+		return nil, fmt.Errorf("keypairMap: keypair by account %s not found", req.Account)
+	}
+	encryptorPk := bfv.NewEncryptorFromPk(common.GetParams(), &kp.PublicKey)
+
+	ask, ok := askMap[req.Account]
+	if !ok {
+		logger.Errorf("askMap: ask by account %s not found", req.Account)
+		return nil, fmt.Errorf("askMap: ask by account %s not found", req.Account)
+	}
+
+	bidMap, ok := bidMap[req.Account]
+	if !ok {
+		logger.Errorf("bidMap: bid by targetAccount %s not found", req.Account)
+		return nil, fmt.Errorf("bidMap: bid by targetAccount %s not found", req.Account)
+	}
+
+	evaluator := bfv.NewEvaluator(common.GetParams())
+	bids := []*pb.EligibleBidResponse_Bid{}
+
+	for key, bid := range bidMap {
+		logger.Infof("Account: %s => Bid: %s", key, bid)
+		limitPriceDistanceCiphertext, _ := evaluator.SubNew(ask.limitPrice, bid.limitPrice).MarshalBinary()
+
+		//TODO: credit should be provided by server's Database
+		credit := common.EncryptIntCiphertext(encryptorPk, 630)
+
+		creditDistanceCiphertext, _ := evaluator.SubNew(credit, bid.credit).MarshalBinary()
+		bids = append(bids, &pb.EligibleBidResponse_Bid{
+			Account:                      key,
+			LimitPriceDistanceCiphertext: limitPriceDistanceCiphertext,
+			CreditDistanceCiphertext:     creditDistanceCiphertext,
+		})
+	}
+
+	logger.Infof("Ask: %v", ask)
+	logger.Infof("BidMap: %v", bidMap)
+	return &pb.EligibleBidResponse{
+		TotalBidNumber: uint64(len(bidMap)),
+		Bids:           bids,
+	}, nil
+}
+
 func unmarshalKeyPairPublic(kp *pb.KeyPair) (KeyPair, error) {
 	pk := bfv.PublicKey{}
 	var err error
@@ -176,11 +288,7 @@ func marshalKeyPair(kp *KeyPair) (*pb.KeyPair, error) {
 }
 
 func newServer() *fheServer {
-	// BFV parameters (128 bit security)
-	params := bfv.DefaultParams[bfv.PN13QP218]
-	// Plaintext modulus
-	params.T = 0x3ee0001
-
+	params = common.GetParams()
 	fmt.Println("============================================")
 	fmt.Println("Homomorphic computations on batched integers")
 	fmt.Println("============================================")
@@ -190,8 +298,13 @@ func newServer() *fheServer {
 	fmt.Println()
 
 	kgen := bfv.NewKeyGenerator(params)
+
 	keypairMap = make(map[string]*KeyPair)
 	keypairHashMap = make(map[[sha256.Size]byte]*KeyPair)
+
+	askMap = make(map[string]*Ask)
+	bidMap = make(map[string](map[string]*Bid))
+
 	s := &fheServer{kgen: kgen}
 	return s
 }

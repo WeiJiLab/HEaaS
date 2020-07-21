@@ -1,16 +1,18 @@
 package main
 
 import (
-	"bytes"
+	"bufio"
 	"context"
-	"crypto/sha256"
-	"encoding/hex"
 	"flag"
+	"fmt"
 	"log"
+	"os"
 	"time"
 
+	"github.com/LabZion/HEaaS/common"
 	pb "github.com/LabZion/HEaaS/fhe"
 	"github.com/golang/protobuf/ptypes/empty"
+	"github.com/ldsec/lattigo/bfv"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/testdata"
@@ -29,8 +31,14 @@ type KeyPair struct {
 	SecretKey []byte
 }
 
-// generateKeys gets a new pair of fhe keys
-func generateKeys(client pb.FHEClient) KeyPair {
+// Bid is a bid
+type Bid struct {
+	LimitPriceDistance int
+	CreditDistance     int
+}
+
+// generateKeysRemote gets a new pair of fhe keys
+func generateKeysRemote(client pb.FHEClient) KeyPair {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	keyPair, err := client.GenerateKey(ctx, &empty.Empty{})
@@ -92,6 +100,28 @@ func fetchPublicKey(client pb.FHEClient, account string) KeyPair {
 	}
 }
 
+// setAsk set an ask for account
+func setAsk(client pb.FHEClient, keyPair KeyPair, account string, limit int) {
+	params := common.GetParams()
+
+	sk := bfv.SecretKey{}
+	sk.UnmarshalBinary(keyPair.SecretKey)
+	encryptorSk := bfv.NewEncryptorFromSk(params, &sk)
+
+	limitCiphertextBytes := common.EncryptInt(encryptorSk, limit)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	_, err := client.SetAsk(ctx, &pb.AskRequest{
+		Account:              account,
+		LimitPriceCipherText: limitCiphertextBytes,
+	})
+	if err != nil {
+		log.Fatalf("%v.SetAsk(_) = _, %v: ", client, err)
+	}
+	return
+}
+
 // fetchPublicKeyBySHA256 store a pair of fhe keys
 func fetchPublicKeyBySHA256(client pb.FHEClient, hash string) KeyPair {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -106,6 +136,36 @@ func fetchPublicKeyBySHA256(client pb.FHEClient, hash string) KeyPair {
 		PublicKey: keyPair.PublicKey,
 		SecretKey: keyPair.SecretKey,
 	}
+}
+
+// getEligibleBids fetch all eligible bids
+func getEligibleBids(client pb.FHEClient, keyPair KeyPair, account string) (uint64, []Bid) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	eligibleBidResponse, err := client.EligibleBid(ctx, &pb.EligibleBidRequest{
+		Account: account,
+	})
+	if err != nil {
+		log.Fatalf("%v.EligibleBid(_) = _, %v: ", client, err)
+	}
+	// Decrypting Bids
+	bids := []Bid{}
+	params := common.GetParams()
+
+	sk := bfv.SecretKey{}
+	sk.UnmarshalBinary(keyPair.SecretKey)
+	decryptor := bfv.NewDecryptor(params, &sk)
+
+	for _, bid := range eligibleBidResponse.Bids {
+		limitPriceDistance := common.DecryptInt(decryptor, bid.LimitPriceDistanceCiphertext)
+		creditDistance := common.DecryptInt(decryptor, bid.CreditDistanceCiphertext)
+
+		bids = append(bids, Bid{
+			LimitPriceDistance: limitPriceDistance,
+			CreditDistance:     creditDistance,
+		})
+	}
+	return eligibleBidResponse.TotalBidNumber, bids
 }
 
 func main() {
@@ -132,16 +192,38 @@ func main() {
 	defer conn.Close()
 	client := pb.NewFHEClient(conn)
 
-	kp := generateKeys(client)
+	kp := generateKeysRemote(client)
 	storePublicKey(client, "fan@torchz.net", kp)
+	/* test fetch key is in third party client
+
 	keyPair := fetchPublicKey(client, "fan@torchz.net")
 	pkSHA256 := sha256.Sum256(keyPair.PublicKey)
+
 	log.Printf("public key sha256: %x", pkSHA256)
+
 	keyPairBySHA256 := fetchPublicKeyBySHA256(client, hex.EncodeToString(pkSHA256[:]))
+
+	// check key manager secret key should be empty
 	if len(keyPair.SecretKey) != 0 {
 		log.Fatalf("length of keyPair.SecretKey != 0, %d", len(keyPair.SecretKey))
 	}
+	// check key manager public key should finde same key via hash and account
 	if !bytes.Equal(keyPair.PublicKey, keyPairBySHA256.PublicKey) {
 		log.Fatalf("keyPair.PublicKey != keyPairBySHA256.PublicKey")
 	}
+	*/
+
+	reader := bufio.NewReader(os.Stdin)
+
+	limit := 100
+	fmt.Println("Saving Ask.")
+	setAsk(client, kp, "fan@torchz.net", limit)
+
+	fmt.Println("Collecting Bids. Press <Enter> to close and getEligibleBids:")
+	reader.ReadString('\n')
+
+	number, bids := getEligibleBids(client, kp, "fan@torchz.net")
+
+	fmt.Printf("total bid number: %d\n", number)
+	fmt.Printf("bids: %#v\n", bids)
 }

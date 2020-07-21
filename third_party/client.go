@@ -9,7 +9,9 @@ import (
 	"log"
 	"time"
 
+	"github.com/LabZion/HEaaS/common"
 	pb "github.com/LabZion/HEaaS/fhe"
+	"github.com/ldsec/lattigo/bfv"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/testdata"
@@ -60,6 +62,31 @@ func fetchPublicKeyBySHA256(client pb.FHEClient, hash string) KeyPair {
 	}
 }
 
+// setBid set an bid for account
+func setBid(client pb.FHEClient, keyPair KeyPair, targetAccount string, account string, limit int, credit int) {
+	params := common.GetParams()
+
+	pk := bfv.PublicKey{}
+	pk.UnmarshalBinary(keyPair.PublicKey)
+	encryptorPk := bfv.NewEncryptorFromPk(params, &pk)
+
+	limitCiphertextBytes := common.EncryptInt(encryptorPk, limit)
+	creditCiphertextBytes := common.EncryptInt(encryptorPk, credit)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	_, err := client.SetBid(ctx, &pb.BidRequest{
+		TargetAccount:        targetAccount,
+		Account:              account,
+		LimitPriceCipherText: limitCiphertextBytes,
+		CreditCipherText:     creditCiphertextBytes,
+	})
+	if err != nil {
+		log.Fatalf("%v.SetBid(_) = _, %v: ", client, err)
+	}
+	return
+}
+
 func main() {
 	flag.Parse()
 	var opts []grpc.DialOption
@@ -94,4 +121,10 @@ func main() {
 	if !bytes.Equal(keyPair.PublicKey, keyPairBySHA256.PublicKey) {
 		log.Fatalf("keyPair.PublicKey != keyPairBySHA256.PublicKey")
 	}
+
+	limit := 100
+	credit := 630
+	setBid(client, keyPair, "fan@torchz.net", "alice@gmail.com", limit+10, credit+100)
+	setBid(client, keyPair, "fan@torchz.net", "bob@gmail.com", limit, credit-100)
+	setBid(client, keyPair, "fan@torchz.net", "evan@gmail.com", limit-10, credit)
 }

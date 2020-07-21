@@ -26,7 +26,7 @@ service FHE {
   // SetBid send out request for eligible quote
   rpc SetBid(BidRequest) returns (google.protobuf.Empty) {}
   // EligibleBid gets interest and eligible loan quote
-  rpc EligibleLoadBid(EligibleBidRequest) returns (BidResponse) {}
+  rpc EligibleBid(EligibleBidRequest) returns (EligibleBidResponse) {}
 }
 
 message KeyPair {
@@ -53,20 +53,26 @@ message EligibleLoanResponse {
 
 message AskRequest {
   string  account = 1;
-  bytes   creditCipherText = 2;
-  bytes   limitPriceCipherText = 3;
+  bytes   limitPriceCipherText = 2;
 }
 
 message BidRequest {
-  string  account = 1;
-  bytes   creditCipherText = 2;
-  bytes   limitPriceCipherText = 3;
+  string  targetAccount = 1;
+  string  account = 2;
+  bytes   creditCipherText = 3;
+  bytes   limitPriceCipherText = 4;
 }
 
 message EligibleBidRequest {
   string  account = 1;
 }
 
-message BidResponse {
-  bytes   eligibleBidCipherText = 1;
+message EligibleBidResponse {
+  uint64  totalBidNumber = 1;
+  message Bid {
+    string account = 1;
+    bytes  limitPriceDistanceCiphertext = 2;
+    bytes  creditDistanceCiphertext = 3;
+  }
+  repeated Bid bids = 2;
 }
